@@ -85,5 +85,5 @@ extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileT
 ## 七：接下来工作：
     添加数据库支持（由于本人对数据库不熟悉，所以开发较慢，又是业余时间开发）;
     
-## 8. effect picture:
+## 八：效果图:
 ![UI](./eTools.png)
