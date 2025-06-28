@@ -1,0 +1,145 @@
+ module/vc/MFC/exe/MFC01.cpp     | 24 +++++++++++++++++++++++-
+ module/vc/MFC/exe/MFC01.vcxproj | 16 ++++++++++------
+ module/vc/MFC/exe/MainFrm.cpp   | 21 +++++++++++++++++++++
+ 3 files changed, 54 insertions(+), 7 deletions(-)
+
+diff --git a/module/vc/MFC/exe/MFC01.cpp b/module/vc/MFC/exe/MFC01.cpp
+index fe58179..37641eb 100644
+--- a/module/vc/MFC/exe/MFC01.cpp
++++ b/module/vc/MFC/exe/MFC01.cpp
+@@ -58,11 +58,33 @@ CMFC01App::CMFC01App() noexcept
+ 
+ CMFC01App theApp;
+ 
++bool FbInit = false;
++
++enum TLangStyle { lsDelphiDll, lsVCDLGDll, lsVCMFCDll, lsQTDll, lsEXE };
++
++extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileType, char** strModuleName, char** strClassName, char** strWindowName, const bool show = false)
++{
++	*lsFileType    = lsVCMFCDll;          // TLangStyle
++	*strModuleName = "系统管理/MFC(DLL)"; // 模块名称
++	*strClassName  = "MFCClassName";      // MFC MDI 主窗体类名
++	*strWindowName = "MFC01";             // MFC MDI 主窗体标题名称
++	FbInit = show;
++
++	if (show)
++	{
++		AFX_MANAGE_STATE(AfxGetStaticModuleState()); 
++		FbInit = TRUE;
++		theApp.InitInstance();
++	}
++}
+ 
+ // CMFC01App 初始化
+ 
+ BOOL CMFC01App::InitInstance()
+ {
++	if (!FbInit)
++		return TRUE;
++
+ 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
+ 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
+ 	//则需要 InitCommonControlsEx()。  否则，将无法创建窗口。
+@@ -85,7 +107,7 @@ BOOL CMFC01App::InitInstance()
+ 
+ 	AfxEnableControlContainer();
+ 
+-	EnableTaskbarInteraction(FALSE);
++	//EnableTaskbarInteraction(FALSE);
+ 
+ 	// 使用 RichEdit 控件需要 AfxInitRichEdit2()
+ 	// AfxInitRichEdit2();
+diff --git a/module/vc/MFC/exe/MFC01.vcxproj b/module/vc/MFC/exe/MFC01.vcxproj
+index 091194f..6225c29 100644
+--- a/module/vc/MFC/exe/MFC01.vcxproj
++++ b/module/vc/MFC/exe/MFC01.vcxproj
+@@ -27,14 +27,14 @@
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+-    <ConfigurationType>Application</ConfigurationType>
++    <ConfigurationType>DynamicLibrary</ConfigurationType>
+     <UseDebugLibraries>true</UseDebugLibraries>
+     <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>Unicode</CharacterSet>
+     <UseOfMfc>Static</UseOfMfc>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+-    <ConfigurationType>Application</ConfigurationType>
++    <ConfigurationType>DynamicLibrary</ConfigurationType>
+     <UseDebugLibraries>false</UseDebugLibraries>
+     <PlatformToolset>v143</PlatformToolset>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+@@ -42,14 +42,14 @@
+     <UseOfMfc>Static</UseOfMfc>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+-    <ConfigurationType>Application</ConfigurationType>
++    <ConfigurationType>DynamicLibrary</ConfigurationType>
+     <UseDebugLibraries>true</UseDebugLibraries>
+     <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>Unicode</CharacterSet>
+     <UseOfMfc>Static</UseOfMfc>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+-    <ConfigurationType>Application</ConfigurationType>
++    <ConfigurationType>DynamicLibrary</ConfigurationType>
+     <UseDebugLibraries>false</UseDebugLibraries>
+     <PlatformToolset>v143</PlatformToolset>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+@@ -75,16 +75,20 @@
+   </ImportGroup>
+   <PropertyGroup Label="UserMacros" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+-    <LinkIncremental>true</LinkIncremental>
++    <LinkIncremental>false</LinkIncremental>
++    <OutDir>..\..\..\..\bin\Win64\Debug\plugins\</OutDir>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+-    <LinkIncremental>true</LinkIncremental>
++    <LinkIncremental>false</LinkIncremental>
++    <OutDir>..\..\..\..\bin\Win32\Debug\plugins\</OutDir>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <LinkIncremental>false</LinkIncremental>
++    <OutDir>..\..\..\..\bin\Win32\Release\plugins\</OutDir>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+     <LinkIncremental>false</LinkIncremental>
++    <OutDir>..\..\..\..\bin\Win64\Release\plugins\</OutDir>
+   </PropertyGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+     <ClCompile>
+diff --git a/module/vc/MFC/exe/MainFrm.cpp b/module/vc/MFC/exe/MainFrm.cpp
+index 7f27161..d548510 100644
+--- a/module/vc/MFC/exe/MainFrm.cpp
++++ b/module/vc/MFC/exe/MainFrm.cpp
+@@ -187,6 +187,27 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
+ 	cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE
+ 		 | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MAXIMIZE | WS_SYSMENU;
+ 
++	// 添加的代码，给 MFC MDI 主窗体添加一个类名
++	WNDCLASS wndcls;
++	if (!GetClassInfo(AfxGetInstanceHandle(), cs.lpszClass, &wndcls))
++	{
++		TRACE("Failed to get default class info\n");
++		return FALSE;
++	}
++
++	// 修改类名但保留其他属性
++	wndcls.lpszClassName = _T("MFCClassName");
++	wndcls.hIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME));
++
++	// 注册新类
++	if (!AfxRegisterClass(&wndcls))
++	{
++		TRACE("Class Registration Failed\n");
++		return FALSE;
++	}
++
++	cs.lpszClass = _T("MFCClassName");
++
+ 	return TRUE;
+ }
+ 

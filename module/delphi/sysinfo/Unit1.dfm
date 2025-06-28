@@ -1,0 +1,146 @@
+object frmSysInfo: TfrmSysInfo
+  Left = 0
+  Top = 0
+  Caption = #31995#32479#20449#24687#19968#35272
+  ClientHeight = 688
+  ClientWidth = 1035
+  Color = clBlack
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  TextHeight = 15
+  object lblOS: TLabel
+    Left = 32
+    Top = 32
+    Width = 96
+    Height = 31
+    Caption = #31995#32479#31867#22411
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clWhite
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblOSValue: TLabel
+    Left = 188
+    Top = 32
+    Width = 61
+    Height = 31
+    Caption = 'lblOS'
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clYellow
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblCPU: TLabel
+    Left = 32
+    Top = 93
+    Width = 97
+    Height = 31
+    Caption = 'CPU'#22411#21495
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clWhite
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblCPUValue: TLabel
+    Left = 188
+    Top = 93
+    Width = 61
+    Height = 31
+    Caption = 'lblOS'
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clYellow
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblMemory: TLabel
+    Left = 32
+    Top = 154
+    Width = 96
+    Height = 31
+    Caption = #20869#23384#22823#23567
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clWhite
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblMemoryValue: TLabel
+    Left = 188
+    Top = 154
+    Width = 61
+    Height = 31
+    Caption = 'lblOS'
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clYellow
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblPCName: TLabel
+    Left = 32
+    Top = 216
+    Width = 120
+    Height = 31
+    Caption = #35745#31639#26426#21517#31216
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clWhite
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblPCNameValue: TLabel
+    Left = 188
+    Top = 216
+    Width = 61
+    Height = 31
+    Caption = 'lblOS'
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clYellow
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblIP: TLabel
+    Left = 32
+    Top = 272
+    Width = 77
+    Height = 31
+    Caption = 'IP '#22320#22336
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clWhite
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblIPValue: TLabel
+    Left = 188
+    Top = 272
+    Width = 61
+    Height = 31
+    Caption = 'lblOS'
+    Font.Charset = GB2312_CHARSET
+    Font.Color = clYellow
+    Font.Height = -24
+    Font.Name = #24494#36719#38597#40657
+    Font.Style = []
+    ParentFont = False
+  end
+end

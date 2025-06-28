@@ -1,0 +1,7 @@
+__history
+*.dcu
+*.local
+*.identcache
+*.rsm
+bin/Win32/Debug
+bin/Win64/Debug

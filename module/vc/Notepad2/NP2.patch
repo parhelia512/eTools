@@ -1,0 +1,143 @@
+ module/vc/Notepad2/src/scintilla/Scintilla.vcxproj   | 9 +++++----
+ module/vc/Notepad2/src/scintilla/src/UniConversion.h | 1 +
+ module/vc/Notepad2/src/src/Edit.c                    | 2 +-
+ module/vc/Notepad2/src/src/Notepad2.c                | 2 +-
+ module/vc/Notepad2/src/src/Notepad2.vcxproj          | 9 +++++----
+ 5 files changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/module/vc/Notepad2/src/scintilla/Scintilla.vcxproj b/scintilla/Scintilla.vcxproj
+index 0be3d2b..efa3087 100644
+--- a/module/vc/Notepad2/src/scintilla/Scintilla.vcxproj
++++ b/module/vc/Notepad2/src/scintilla/Scintilla.vcxproj
+@@ -23,28 +23,29 @@
+     <ProjectGuid>{5877B917-512B-49F5-B514-1B4159E7A9CA}</ProjectGuid>
+     <ProjectName>Scintilla</ProjectName>
+     <RootNamespace>Scintilla</RootNamespace>
++    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+diff --git a/scintilla/src/UniConversion.h b/scintilla/src/UniConversion.h
+index e812f55..43b4661 100644
+--- a/module/vc/Notepad2/src/scintilla/src/UniConversion.h
++++ b/module/vc/Notepad2/src/scintilla/src/UniConversion.h
+@@ -4,6 +4,7 @@
+  **/
+ // Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
+ // The License.txt file describes the conditions under which this software may be distributed.
++#include <iostream>
+ 
+ #ifndef UNICONVERSION_H
+ #define UNICONVERSION_H
+diff --git a/src/Edit.c b/src/Edit.c
+index 39a70d0..eb491c0 100644
+--- a/module/vc/Notepad2/src/src/Edit.c
++++ b/module/vc/Notepad2/src/src/Edit.c
+@@ -1768,7 +1768,7 @@ void EditTitleCase(HWND hwnd)
+       bPrevWasSpace = TRUE;
+       for (i = 0; i < cchTextW; i++)
+       {
+-          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"'`΄’",pszTextW[i]) ||  bPrevWasSpace ) )
++          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"\x0027\x2019\x0060\x00B4",pszTextW[i]) ||  bPrevWasSpace ) )
+           {
+               bNewWord = TRUE;
+           }
+diff --git a/src/Notepad2.c b/src/Notepad2.c
+index d6b2523..e2fa5bf 100644
+--- a/module/vc/Notepad2/src/src/Notepad2.c
++++ b/module/vc/Notepad2/src/src/Notepad2.c
+@@ -876,12 +876,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+         bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
+     }
+     else {
+-      if (bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,lpFileArg)) {
+-        if (flagJumpTo) { // Jump to position
+-          EditJumpTo(hwndEdit,iInitialLine,iInitialColumn);
+-          EditEnsureSelectionVisible(hwndEdit);
+-        }
+-      }
++      //if (bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,lpFileArg)) {
++      //  if (flagJumpTo) { // Jump to position
++      //    EditJumpTo(hwndEdit,iInitialLine,iInitialColumn);
++      //    EditEnsureSelectionVisible(hwndEdit);
++      //  }
++      //}
+     }
+     GlobalFree(lpFileArg);
+ 
+@@ -6474,7 +6474,7 @@ int FindIniFile() {
+   int bFound = 0;
+   WCHAR tchTest[MAX_PATH];
+   WCHAR tchModule[MAX_PATH];
+-  GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
++  GetModuleFileName(g_hInstance,tchModule,COUNTOF(tchModule));
+ 
+   if (lstrlen(szIniFile)) {
+     if (lstrcmpi(szIniFile,L"*?") == 0)
+diff --git a/src/Notepad2.vcxproj b/src/Notepad2.vcxproj
+index 8f95409..3719cfa 100644
+--- a/module/vc/Notepad2/src/src/Notepad2.vcxproj
++++ b/module/vc/Notepad2/src/src/Notepad2.vcxproj
+@@ -22,31 +22,32 @@
+     <Keyword>Win32Proj</Keyword>
+     <ProjectGuid>{BAAD32AB-CD47-12FD-873C-0BBC204B7641}</ProjectGuid>
+     <ProjectName>Notepad2</ProjectName>
++    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <UseDebugLibraries>true</UseDebugLibraries>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <UseDebugLibraries>false</UseDebugLibraries>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <UseDebugLibraries>true</UseDebugLibraries>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <CharacterSet>Unicode</CharacterSet>
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v141_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <UseDebugLibraries>false</UseDebugLibraries>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
