@@ -120,6 +120,7 @@ var
   rsDB   : TRestServerDB;
   Records: TObjectList;
 begin
+  { 资源中的 sqlite 数据库解压到内存流 }
   archive := CreateInArchive(CLSID_CFormat7z, str7zDllFile);
   archive.OpenStream(T7zStream.Create(TResourceStream.Create(HInstance, 'CHINA', RT_RCDATA), soOwned));
   FsqliteDB := TMemoryStream.Create;
