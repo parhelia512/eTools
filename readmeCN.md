@@ -73,14 +73,14 @@ extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileT
 extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileType, char** strModuleName, char** strClassName, char** strWindowName, const bool show = false)
 
  lsFileType        ：Dll 窗体类型；是基于 Dialog(对话框) 的 DLL 窗体，还是基于 MFC 的 DLL 窗体，还是基于 QT 的 DLL 窗体；
- strModuleName     ：子模块名称；
+ strModuleName     ：模块名称；
  strClassName      ：DLL 主窗体的类名；
  strWindowName     ：DLL 主窗体的标题名；
  show              ：显示/隐藏窗体；
 ```
 
 ## 六：已知存在的BUG：
-    1、文件拖放只能拖放到主窗体上，不能直接拖放到子模块 DLL 窗口中；这是由于权限造成的问题(资源管理器是普通权限、而 eTools 是管理员权限)；
+    1、文件拖放只能拖放到主窗体上，不能直接拖放到模块 DLL 窗口中；这是由于权限造成的问题(资源管理器是普通权限、而 eTools 是管理员权限)；
 
 ## 七：接下来工作：
     添加数据库支持（由于本人对数据库不熟悉，所以开发较慢，又是业余时间开发）;

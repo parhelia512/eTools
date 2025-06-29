@@ -73,14 +73,14 @@ extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileT
 extern "C" __declspec(dllexport) void db_ShowDllForm_Plugins(TLangStyle* lsFileType, char** strModuleName, char** strClassName, char** strWindowName, const bool show = false)
 
  lsFileType        : DLL form type; whether it is a Dialog-based DLL form, an MFC-based DLL form, or a QT-based DLL form;
- strModuleName     : Submodule name;
+ strModuleName     : Module name;
  strClassName      : Main form class name in the DLL;
  strWindowName     : Main form title in the DLL;
  show              : Show/hide the form;
 ```
 
 ## 6. Known Bugs:
-    1. File drag-and-drop can only be performed on the main form, not directly on submodule DLL windows; this is due to permission issues (the file explorer runs with normal permissions, while eTools runs with administrator permissions);
+    1. File drag-and-drop can only be performed on the main form, not directly on Module DLL windows; this is due to permission issues (the file explorer runs with normal permissions, while eTools runs with administrator permissions);
 
 ## 7. Future Work:
     Add database support (development is slow due to limited familiarity with databases and being a side project);
