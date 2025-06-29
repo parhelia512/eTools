@@ -110,6 +110,7 @@ begin
   with TIniFile.Create(strPath) do
   begin
     btnCaptureScreen.Enabled := FileExists(ReadString('PATH', 'FFMPEG', ''));
+    Free;
   end;
 end;
 

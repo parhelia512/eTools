@@ -3,8 +3,8 @@ unit frmCaptureScreen;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.StrUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXCtrls,
-  DosCommand;
+  Winapi.Windows, Winapi.Messages, System.IniFiles, System.SysUtils, System.StrUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXCtrls, DosCommand;
 
 type
   TfrmCS = class(TForm)
@@ -72,14 +72,19 @@ end;
 
 procedure TfrmCS.btnStopCaptureClick(Sender: TObject);
 const
-  c_strMP4ToGIF = '"%s\ffmpeg.exe" -ss 0 -i "%s" -f gif "%s"';
+  c_strMP4ToGIF = '"%s" -ss 0 -i "%s" -f gif "%s"';
 var
   hFFMPEG: THandle;
 begin
   btnStopCapture.Enabled := False;
 
   { 结束 MP4 录制 }
-  hFFMPEG := FindWindow('ConsoleWindowClass', '..\..\bin\Win32\PBox.exe');
+{$IFDEF CPUX86}
+  hFFMPEG := FindWindow('ConsoleWindowClass', '..\..\..\bin\Win32\Relase\eTools.exe');
+{$ELSE}
+  hFFMPEG := FindWindow('ConsoleWindowClass', '..\..\..\bin\Win64\Relase\eTools.exe');
+{$ENDIF}
+
   if hFFMPEG = 0 then
     hFFMPEG := FindWindow('ConsoleWindowClass', PChar(ParamStr(0)));
   SendMessage(hFFMPEG, WM_SYSCOMMAND, SC_CLOSE, 0);
@@ -88,7 +93,13 @@ begin
 
   { MP4 转换为 GIF }
   if cbbVideoType.ItemIndex = 1 then
-    WinExec(PAnsiChar(AnsiString(Format(c_strMP4ToGIF, [ExtractFilePath(ParamStr(0)) + 'plugins\sdk\ffmpeg\bin', FstrMP4FileName, ChangeFileExt(FstrMP4FileName, '.GIF')]))), SW_HIDE);
+  begin
+    with TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'config.ini') do
+    begin
+      WinExec(PAnsiChar(AnsiString(Format(c_strMP4ToGIF, [ReadString('PATH', 'FFMPEG', ''), FstrMP4FileName, ChangeFileExt(FstrMP4FileName, '.GIF')]))), SW_HIDE);
+      free;
+    end;
+  end;
 
   { 结束 }
   Close;
@@ -103,7 +114,7 @@ end;
 
 procedure TfrmCS.btnStartCaptureClick(Sender: TObject);
 const
-  c_strCaptonScreen = '"%s\ffmpeg.exe" -f gdigrab -framerate 60 -offset_x %s -offset_y %s -video_size %sx%s -i desktop -f mp4 "%s"';
+  c_strCaptonScreen = '"%s" -f gdigrab -framerate 60 -offset_x %s -offset_y %s -video_size %sx%s -i desktop -f mp4 "%s"';
 begin
   btnReSelect.Enabled     := False;
   btnStartCapture.Enabled := False;
@@ -116,9 +127,13 @@ begin
   cbbVideoType.Enabled := False;
   srchbx1.Enabled      := False;
 
-  FstrMP4FileName         := Format('%s%sCapture%s.mp4', [srchbx1.Text, IfThen(RightStr(srchbx1.Text, 1) = '\', '', '\'), FormatDateTime('yyyyMMddhhssmm', Now)]);
-  FDOSCommand.CommandLine := Format(c_strCaptonScreen, [ExtractFilePath(ParamStr(0)) + 'plugins\sdk\ffmpeg\bin', edtLeft.Text, edtTop.Text, edtWidth.Text, edtHeight.Text, FstrMP4FileName]);
-  FDOSCommand.Execute;
+  with TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'config.ini') do
+  begin
+    FstrMP4FileName         := Format('%s%sCapture%s.mp4', [srchbx1.Text, IfThen(RightStr(srchbx1.Text, 1) = '\', '', '\'), FormatDateTime('yyyyMMddhhssmm', Now)]);
+    FDOSCommand.CommandLine := Format(c_strCaptonScreen, [ReadString('PATH', 'FFMPEG', ''), edtLeft.Text, edtTop.Text, edtWidth.Text, edtHeight.Text, FstrMP4FileName]);
+    FDOSCommand.Execute;
+    free;
+  end;
 end;
 
 end.

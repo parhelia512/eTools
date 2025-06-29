@@ -33,6 +33,7 @@ uses uMain;
 var
   frmFullScreen: TfrmFullScreen = nil;
   FDllMainForm : TfrmSnapScreen;
+
 procedure ShowFullScreen(DllMainFormHandle: THandle; const bShowMainForm: Boolean = True);
 begin
   FDllMainForm := TfrmSnapScreen(GetInstanceFromhWnd(DllMainFormHandle));
