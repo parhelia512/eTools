@@ -2,12 +2,15 @@ unit Unit1;
 
 interface
 
-uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, uScrollBar, Vcl.ExtCtrls;
 
 type
   TfrmEnv = class(TForm)
     Memo1: TMemo;
-    procedure FormCreate(Sender: TObject);
+    tmrStart: TTimer;
+    procedure tmrStartTimer(Sender: TObject);
+  private
+    FSBLV: TFMScrollBar;
   end;
 
 var
@@ -17,12 +20,16 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmEnv.FormCreate(Sender: TObject);
+procedure TfrmEnv.tmrStartTimer(Sender: TObject);
 var
   EnvStrings: PChar;
   EnvVar    : string;
   P         : PChar;
 begin
+  tmrStart.Enabled := False;
+  FSBLV            := TFMScrollBar.Create(nil);
+  FSBLV.InitScrollbar(Memo1);
+
   EnvStrings := GetEnvironmentStrings;
   try
     P := EnvStrings;

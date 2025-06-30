@@ -11,7 +11,6 @@ object frmEnv: TfrmEnv
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
-  OnCreate = FormCreate
   TextHeight = 15
   object Memo1: TMemo
     Left = 0
@@ -22,18 +21,25 @@ object frmEnv: TfrmEnv
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
-    Color = 3947580
+    Color = clWhite
     Ctl3D = False
     Font.Charset = GB2312_CHARSET
-    Font.Color = clWhite
-    Font.Height = -16
+    Font.Color = clBlack
+    Font.Height = -19
     Font.Name = #24494#36719#38597#40657
     Font.Style = []
     ParentCtl3D = False
     ParentFont = False
     ReadOnly = True
-    ScrollBars = ssBoth
+    ScrollBars = ssVertical
     TabOrder = 0
     WantReturns = False
+    WantTabs = True
+  end
+  object tmrStart: TTimer
+    Interval = 100
+    OnTimer = tmrStartTimer
+    Left = 56
+    Top = 120
   end
 end
