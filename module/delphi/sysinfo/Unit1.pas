@@ -2,7 +2,7 @@ unit Unit1;
 
 interface
 
-uses Winapi.Windows, Winapi.Messages, Winapi.WinSock, System.SysUtils, System.Variants, System.Classes, Winapi.ActiveX, System.Win.ComObj, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+uses Winapi.Windows, Winapi.Messages, Winapi.WinSock, System.SysUtils, System.Variants, System.Classes, Winapi.ActiveX, System.Win.ComObj, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, IdHTTP;
 
 type
   TfrmSysInfo = class(TForm)
@@ -121,6 +121,65 @@ begin
   end;
 end;
 
+function SyncUI(lblIPValue: TLabel; const strIP, strError: string): TThreadProcedure;
+begin
+  lblIPValue.Caption := lblIPValue.Caption + '(公网IP：' + strIP + ')';
+end;
+
+procedure GetNativePublicIP(lblIPValue: TLabel);
+var
+  Thread: TThread;
+  tmd   : TThreadProcedure;
+begin
+  Thread := TThread.CreateAnonymousThread(
+    procedure
+    var
+      IdHTTP: TIdHTTP;
+      services: array of string;
+      I: Integer;
+      strIP, strError: string;
+    begin
+      strIP := '';
+      strError := '';
+
+      try
+        IdHTTP := TIdHTTP.Create(nil);
+        try
+          IdHTTP.ConnectTimeout := 5000;
+          IdHTTP.ReadTimeout := 5000;
+          services := ['http://ipinfo.io/ip', 'http://icanhazip.com', 'http://checkip.amazonaws.com'];
+          for I := 0 to High(services) do
+          begin
+            try
+              strIP := Trim(IdHTTP.Get(services[I]));
+              if (Pos('.', strIP) > 0) and (Length(strIP) >= 7) then
+                Break;
+            except
+              on E: Exception do
+              begin
+                strError := E.Message;
+                strIP := '';
+              end;
+            end;
+          end;
+        finally
+          IdHTTP.Free;
+        end;
+      except
+        on E: Exception do
+          strError := E.Message;
+      end;
+
+      if strIP <> '' then
+      begin
+        tmd := SyncUI(lblIPValue, strIP, strError);
+        TThread.Queue(nil, tmd);
+      end;
+    end);
+  Thread.FreeOnTerminate := True;
+  Thread.Start;
+end;
+
 procedure TfrmSysInfo.FormCreate(Sender: TObject);
 var
   TotalMem, FreeMem: UInt64;
@@ -132,6 +191,7 @@ begin
   lblMemoryValue.Caption := Format('总大小：%.2fG；可用内存：%.2fG', [TotalMem / (1024 * 1024 * 1024), FreeMem / (1024 * 1024 * 1024)]);
   lblPCNameValue.Caption := GetComputerName;
   lblIPValue.Caption     := GetLocalIPs[0];
+  GetNativePublicIP(lblIPValue);
 end;
 
 end.
